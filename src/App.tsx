@@ -4,6 +4,7 @@ import { MouseEvent, useEffect } from "react";
 import * as crypto from "crypto";
 import * as microsoftTeams from "@microsoft/teams-js";
 import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
+var axios = require("axios").default;
 microsoftTeams.initialize();
 
 function App() {
@@ -51,7 +52,7 @@ const handleSignIn = (e: MouseEvent): void => {
   // &client_id=01FAE4RAZKK224M47KHP7RBSRA&code_challenge=${challenge}
   // &code_challenge_method=S256&%20%20redirect_uri=http://localhost:3000
   // &audience=appointments:api&state=xyzABC123&redirectTo=%2F`;
-  const path = `https://dev-4t7jabs8.us.auth0.com/authorize?response_type=code&client_id=gVPNspUn8AggRybYvQjrkGWwIcbrPk38&code_challenge=${challenge}&code_challenge_method=S256&redirect_uri=https://9dd6-2607-fea8-ba1-e400-9d7f-7c07-eaa7-e39a.ngrok.io/Oauthcallback&scope=appointments%20contacts&state=xyzABC123`;
+  const path = `https://dev-4t7jabs8.us.auth0.com/authorize?response_type=code&client_id=QPjjWTU2m7XuWtPTo1FAYbNaZphqnbWQ&code_challenge=${challenge}&code_challenge_method=S256&redirect_uri=https://34e0-2607-fea8-ba1-e400-acb1-eb67-8300-ed93.ngrok.io/Oauthcallback&scope=appointments%20contacts&state=xyzABC123`;
   debugger;
   microsoftTeams.authentication.authenticate({
     url: path,
@@ -84,6 +85,7 @@ function Home() {
 
 const accesstoken = () => {
   const urlParams = new URLSearchParams(window.location.search);
+  console.log("verifier", verifier);
   fetch("https://dev-4t7jabs8.us.auth0.com/oauth/token", {
     method: "post",
     headers: {
@@ -91,14 +93,41 @@ const accesstoken = () => {
     },
     body: JSON.stringify({
       grant_type: "authorization_code",
-      client_id: "gVPNspUn8AggRybYvQjrkGWwIcbrPk38",
+      client_id: "QPjjWTU2m7XuWtPTo1FAYbNaZphqnbWQ",
       code_verifier: `${verifier}`,
       code: `${urlParams.get("code")}`,
-      redirect_uri: "http://localhost:3000",
+      redirect_uri:
+        "https://3804-2607-fea8-ba1-e400-9d7f-7c07-eaa7-e39a.ngrok.io",
     }),
   })
     .then((response) => response.json())
-    .then((data) => console.log(data));
+    .then((data) => microsoftTeams.authentication.notifySuccess(data.token));
+  // var options = {
+  //   method: "POST",
+  //   url: "https://dev-4t7jabs8.us.auth0.com/oauth/token",
+  //   headers: {
+  //     "Content-Type":
+  //       "application/x-www-form-urlencoded; charset=UTF-8;application/json",
+  //   },
+  //   data: {
+  //     grant_type: "authorization_code",
+  //     client_id: "B0eryZijemcFaKFOIDDM7BZvAWN1sGje",
+  //     client_secret:
+  //       "1G9yzpEuL224k2iI7WXA0BH-wAzgfYHRZDChlT1Ld0pleEWOAeV72CzRk57Hfa-n",
+  //     code: `${urlParams.get("code")}`,
+  //     redirect_uri:
+  //       "https://34e0-2607-fea8-ba1-e400-acb1-eb67-8300-ed93.ngrok.io",
+  //   },
+  // };
+
+  // axios
+  //   .request(options)
+  //   .then(function (response: { data: any }) {
+  //     console.log(response.data);
+  //   })
+  //   .catch(function (error: any) {
+  //     console.error(error);
+  //   });
 };
 
 function Oauthcallback() {
@@ -108,10 +137,6 @@ function Oauthcallback() {
     if (Params.has("code")) {
       console.log(Params.get("code"));
       accesstoken();
-      microsoftTeams.authentication.notifySuccess(
-        // @ts-ignore
-        Params.get("code") || ""
-      );
       // window.close();
     } else {
       microsoftTeams.authentication.notifyFailure();
