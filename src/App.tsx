@@ -52,7 +52,7 @@ const handleSignIn = (e: MouseEvent): void => {
   // &client_id=01FAE4RAZKK224M47KHP7RBSRA&code_challenge=${challenge}
   // &code_challenge_method=S256&%20%20redirect_uri=http://localhost:3000
   // &audience=appointments:api&state=xyzABC123&redirectTo=%2F`;
-  const path = `https://dev-4t7jabs8.us.auth0.com/authorize?response_type=code&client_id=QPjjWTU2m7XuWtPTo1FAYbNaZphqnbWQ&code_challenge=${challenge}&code_challenge_method=S256&redirect_uri=https://34e0-2607-fea8-ba1-e400-acb1-eb67-8300-ed93.ngrok.io/Oauthcallback&scope=appointments%20contacts&state=xyzABC123`;
+  const path = `https://dev-4t7jabs8.us.auth0.com/authorize?response_type=code&client_id=QPjjWTU2m7XuWtPTo1FAYbNaZphqnbWQ&code_challenge=${challenge}&code_challenge_method=S256&redirect_uri=https://authpkceflow.herokuapp.com/Oauthcallback&scope=appointments%20contacts&state=xyzABC123`;
   debugger;
   microsoftTeams.authentication.authenticate({
     url: path,
@@ -96,8 +96,7 @@ const accesstoken = () => {
       client_id: "QPjjWTU2m7XuWtPTo1FAYbNaZphqnbWQ",
       code_verifier: `${verifier}`,
       code: `${urlParams.get("code")}`,
-      redirect_uri:
-        "https://3804-2607-fea8-ba1-e400-9d7f-7c07-eaa7-e39a.ngrok.io",
+      redirect_uri: "https://authpkceflow.herokuapp.com/",
     }),
   })
     .then((response) => response.json())
